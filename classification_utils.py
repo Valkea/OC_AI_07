@@ -241,7 +241,7 @@ def save_score(
     scores_df.to_csv(scores_path, index=False)
 
 
-def init_scores():
+def init_scores(file_path="data/scores.csv"):
     global scores_df, y_preds, scores_path
 
     scores_df = pd.DataFrame(
@@ -264,7 +264,7 @@ def init_scores():
         ]
     )
     y_preds = {}
-    scores_path = "data/scores.csv"
+    scores_path = file_path
     scores_df.to_csv(scores_path, index=False)
 
 
