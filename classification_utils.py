@@ -64,13 +64,13 @@ def print_confusion_matrix(y_true, y_pred):
     plt.show()
 
 
-def print_rocauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
+def print_rocauc(y_true_dict, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     """Display the 'top_others' best ROC Curves + the last provided ROC Curve
 
     Parameters
     ----------
-    y_true: list
-        the expected values
+    y_true_dict: list
+        the expected values for several models
     y_pred_dict: list
         the predicted values for several models
     """
@@ -88,6 +88,7 @@ def print_rocauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     sorted_scores = defaultdict(list)
     for i, (model_name, y_pred) in enumerate(y_pred_dict.items()):
         if model_name != last_score_name:
+            y_true = y_true_dict[model_name]
             roc_score = roc_auc_score(y_true, y_pred)
             sorted_scores[model_name] = roc_score
     sorted_scores = sorted(sorted_scores, key=lambda x: sorted_scores[x], reverse=True)[
@@ -100,6 +101,7 @@ def print_rocauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     for i, model_name in enumerate(sorted_scores):
         alpha_v = 1 if i == min(top_others, len(sorted_scores) - 1) else 0.2
 
+        y_true = y_true_dict[model_name]
         y_pred = y_pred_dict[model_name]
         roc_score = roc_auc_score(y_true, y_pred)
         fpr, tpr, thresholds = roc_curve(y_true, y_pred)
@@ -120,13 +122,13 @@ def print_rocauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     return auc_scores
 
 
-def print_prauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
+def print_prauc(y_true_dict, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     """Display the 'top_others' best Precision Recall Curves + the last provided Precision Recall Curve
 
     Parameters
     ----------
-    y_true: list
-        the expected values
+    y_true_dict: list
+        the expected values for several models
     y_pred_dict: list
         the predicted values for several models
     """
@@ -144,6 +146,7 @@ def print_prauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     sorted_scores = defaultdict(list)
     for i, (model_name, y_pred) in enumerate(y_pred_dict.items()):
         if model_name != last_score_name:
+            y_true = y_true_dict[model_name]
             pr_score = average_precision_score(y_true, y_pred)
             sorted_scores[model_name] = pr_score
     sorted_scores = sorted(sorted_scores, key=lambda x: sorted_scores[x], reverse=True)[
@@ -156,6 +159,7 @@ def print_prauc(y_true, y_pred_dict, figsize=[5, 5], ax=None, top_others=3):
     for i, model_name in enumerate(sorted_scores):
         alpha_v = 1 if i == min(top_others, len(sorted_scores) - 1) else 0.2
 
+        y_true = y_true_dict[model_name]
         y_pred = y_pred_dict[model_name]
         pr_score = average_precision_score(y_true, y_pred)
         precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
@@ -242,7 +246,7 @@ def save_score(
 
 
 def init_scores(file_path="data/scores.csv"):
-    global scores_df, y_preds, scores_path
+    global scores_df, scores_path, y_preds, y_trues
 
     scores_df = pd.DataFrame(
         columns=[
@@ -264,6 +268,7 @@ def init_scores(file_path="data/scores.csv"):
         ]
     )
     y_preds = {}
+    y_trues = {}
     scores_path = file_path
     scores_df.to_csv(scores_path, index=False)
 
@@ -361,8 +366,9 @@ def get_scores(
     # ROC AUC curves
     if show_roccurves:
         y_preds[method_name] = y_pred_proba
-        print_rocauc(y_ref, y_preds)
-        print_prauc(y_ref, y_preds)
+        y_trues[method_name] = y_ref
+        print_rocauc(y_trues, y_preds)
+        print_prauc(y_trues, y_preds)
 
 
 def predict(model, X_ref, threshold=None):
