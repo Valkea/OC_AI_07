@@ -275,9 +275,11 @@ def init_scores(file_path="data/scores.csv"):
 
 def get_scores(
     method_name,
-    model,
     X_ref,
     y_ref,
+    model=None,
+    y_pred=None,
+    y_pred_proba=None,
     param_grid=None,
     threshold=None,
     training_time=None,
@@ -299,6 +301,10 @@ def get_scores(
         the name used to identify the record in the list
     model:
         the model that needs to be evaluated
+    y_pred:
+        the predicted values (only if the model is not provided)
+    y_pred_proba:
+        the predicted proba values (only if the model is not provided)
     X_ref: list of lists
         the X values used to get the predictions
     y_ref: list
@@ -313,21 +319,28 @@ def get_scores(
         the scores to register
     """
 
-    y_pred, y_pred_proba, inference_time = predict(model, X_ref, threshold)
-    cm = confusion_matrix(y_ref, y_pred, labels=[0, 1])
+    if model is not None:
+        y_pred, y_pred_proba, inference_time = predict(model, X_ref, threshold)
 
-    scores = {
-        "roc_auc": roc_auc_score(y_ref, y_pred_proba),
-        "f1": f1_score(y_ref, y_pred),
-        "accuracy": accuracy_score(y_ref, y_pred),
-        "precision": precision_score(y_ref, y_pred, zero_division=0),
-        "recall": recall_score(y_ref, y_pred),
-        "average_precision": average_precision_score(y_ref, y_pred_proba),
-        "TN": cm[0][0],
-        "FP": cm[0][1],
-        "FN": cm[1][0],
-        "TP": cm[1][1],
-    }
+    try:
+
+        cm = confusion_matrix(y_ref, y_pred, labels=[0, 1])
+
+        scores = {
+            "roc_auc": roc_auc_score(y_ref, y_pred_proba),
+            "f1": f1_score(y_ref, y_pred),
+            "accuracy": accuracy_score(y_ref, y_pred),
+            "precision": precision_score(y_ref, y_pred, zero_division=0),
+            "recall": recall_score(y_ref, y_pred),
+            "average_precision": average_precision_score(y_ref, y_pred_proba),
+            "TN": cm[0][0],
+            "FP": cm[0][1],
+            "FN": cm[1][0],
+            "TP": cm[1][1],
+        }
+
+    except NameError:
+        print("We either need a model or the y_pred & y_pred_proba variables")
 
     # Register score and replace if it already exists
     if register:
@@ -340,6 +353,7 @@ def get_scores(
     for key in scores.keys():
         if type(scores[key]) == np.float64 and key not in ["TP", "TN", "FP", "FN"]:
             scores_str += f"{key.upper().rjust(20)} : {scores[key]:.4f}\n"
+    scores_str += f"\n{'TRAINING-TIME'.rjust(20)} : {training_time:.4f}\n{'INFERENCE-TIME'.rjust(20)} : {inference_time:.4f}\n"
 
     print(
         "-" * 100,
