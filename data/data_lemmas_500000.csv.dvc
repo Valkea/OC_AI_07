@@ -1,0 +1,4 @@
+outs:
+- md5: e45be3fdbe427729e6ceb4b754a08dca
+  size: 17033318
+  path: data_lemmas_500000.csv
