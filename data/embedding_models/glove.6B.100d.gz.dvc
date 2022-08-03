@@ -1,0 +1,4 @@
+outs:
+- md5: 17893ea728ac3573ad3ad2ba32c28d94
+  size: 134300425
+  path: glove.6B.100d.gz
