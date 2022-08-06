@@ -1,4 +1,5 @@
 import time
+import pathlib
 from collections import defaultdict
 
 import pandas as pd
@@ -245,7 +246,7 @@ def save_score(
     scores_df.to_csv(scores_path, index=False)
 
 
-def init_scores(file_path="data/scores.csv"):
+def init_scores(file_path="data/scores.csv", append=False):
     global scores_df, scores_path, y_preds, y_trues
 
     scores_df = pd.DataFrame(
@@ -269,8 +270,11 @@ def init_scores(file_path="data/scores.csv"):
     )
     y_preds = {}
     y_trues = {}
-    scores_path = file_path
-    scores_df.to_csv(scores_path, index=False)
+    scores_path = pathlib.Path(file_path)
+    if append is True and scores_path.is_file():
+        scores_df = pd.read_csv(scores_path)
+    else:
+        scores_df.to_csv(scores_path, index=False)
 
 
 def get_scores(
