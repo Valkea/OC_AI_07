@@ -279,8 +279,8 @@ def init_scores(file_path="data/scores.csv", append=False):
 
 def get_scores(
     method_name,
-    X_ref,
     y_ref,
+    X_ref=None,
     model=None,
     y_pred=None,
     y_pred_proba=None,
@@ -321,10 +321,18 @@ def get_scores(
         the time needed for the prediction process
     scores: list of parameters
         the scores to register
+
+    Return
+    ------
+    dict:
+        the dictionary of the computed scores
     """
 
     if model is not None:
         y_pred, y_pred_proba, inference_time = predict(model, X_ref, threshold)
+
+    if y_pred is None or y_pred_proba is None:
+        raise Exception("We either need the model with a X_ref to compute y_pred & y_pred_proba or directly the y_pred & y_pred_proba")
 
     try:
 
@@ -388,6 +396,8 @@ def get_scores(
         print_rocauc(y_trues, y_preds)
         print_prauc(y_trues, y_preds)
 
+    return scores
+
 
 def predict(model, X_ref, threshold=None):
     """Convenience function that generalize the prediction process
@@ -413,7 +423,11 @@ def predict(model, X_ref, threshold=None):
 
     t0 = time.perf_counter()
 
-    y_pred_proba = model.predict_proba(X_ref)[:, 1]
+    try:
+        y_pred_proba = model.predict_proba(X_ref)[:, 1]
+    except Exception:
+        y_pred_proba = model.predict(X_ref)
+
     if threshold:
         y_pred = get_labels_from_threshold(y_pred_proba, threshold)
     else:
@@ -466,7 +480,11 @@ def find_best_threshold(model, X_valid, y_valid, eval_function):
 
     best_threshold = 0.0
     best_score = 0.0
-    y_pred_proba = model.predict_proba(X_valid)[:, 1]
+
+    try:
+        y_pred_proba = model.predict_proba(X_valid)[:, 1]
+    except Exception:
+        y_pred_proba = model.predict(X_valid)
 
     for threshold in np.arange(0, 1, 0.001):
 
