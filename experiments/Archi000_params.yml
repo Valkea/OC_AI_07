@@ -1,0 +1,6 @@
+batch_size: 1024
+layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
+  {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
+  1})]'
+model_name: Archi000
+sample_size: 100000
