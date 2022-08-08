@@ -1,7 +1,9 @@
-archi_desc: Bi-LSTM 32 + Dense 10
+archi_desc: Bi-LSTM 64 Seq + Dropout 0.2 + Bi-LSTM 32 + Dropout 0.2 + Dense 64 + Dropout
+  0.1
 batch_size: 1024
 layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
-  {}), (''LSTM'', {''units'': 32}), (''Dense'', {''units'': 10}), (''Dense'', {''units'':
-  1})]'
-model_name: Archi401
+  {}), (''LSTM'', {''units'': 64}), (''Dropout'', {''rate'': 0.2}), (''Bidirectional'',
+  {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.2}), (''Dense'', {''units'':
+  64}), (''Dropout'', {''rate'': 0.1}), (''Dense'', {''units'': 1})]'
+model_name: Archi402
 sample_size: 100000
