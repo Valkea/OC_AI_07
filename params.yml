@@ -1,7 +1,7 @@
-archi_desc: Bi-LSTM 64 + Dense 24
+archi_desc: Bi-GRU 64 + Dropout 0.5
 batch_size: 4096
 layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
-  {}), (''LSTM'', {''units'': 64}), (''Dense'', {''units'': 24}), (''Dense'', {''units'':
+  {}), (''GRU'', {''units'': 64}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
   1})]'
-model_name: Archi202
+model_name: Archi301
 sample_size: 1452791
