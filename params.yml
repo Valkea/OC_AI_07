@@ -1,7 +1,7 @@
-archi_desc: Keras Embedding + Bigrams | Bi-LSTM 32 + Dropout 0.5
+archi_desc: Keras Embedding + MASK + Bigrams | Bi-LSTM 32 + Dropout 0.5
 batch_size: 1024
 layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 128}), (''Bidirectional'',
   {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
   1})]'
-model_name: EmbedB1
+model_name: EmbedB2
 sample_size: 100000
