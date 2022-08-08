@@ -1,6 +1,6 @@
-archi_desc: No Embedding + Bigrams | Dense 16 + Dropout 0.5
+archi_desc: No Embedding + Unigrams | Dense 16 + Dropout 0.5
 batch_size: 1024
 layers: '[(''InputLayer'', {}), (''Dense'', {''units'': 16}), (''Dropout'', {''rate'':
   0.5}), (''Dense'', {''units'': 1})]'
-model_name: EmbedA0
+model_name: EmbedA1
 sample_size: 100000
