@@ -1,7 +1,5 @@
-archi_desc: Word2Vec 300d google + MASK + NT + Unigrams| Bi-LSTM 32 + Dropout 0.5
-batch_size: 1024
-layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 300}), (''Bidirectional'',
-  {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
-  1})]'
-model_name: EmbedB9
+archi_desc: LogisticRegression with TfidVectorizer
+batch_size: null
+layers: null
+model_name: EmbedC0
 sample_size: 100000
