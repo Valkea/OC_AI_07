@@ -1,5 +1,5 @@
 archi_desc: Bi-LSTM 32 + Dropout 0.5
-batch_size: 8192
+batch_size: 4096
 layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
   {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
   1})]'
