@@ -1,7 +1,7 @@
-archi_desc: FastText 300d + MASK + NT + Unigrams| Bi-LSTM 32 + Dropout 0.5
+archi_desc: Word2Vec 300d google + MASK + NT + Unigrams| Bi-LSTM 32 + Dropout 0.5
 batch_size: 1024
 layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 300}), (''Bidirectional'',
   {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
   1})]'
-model_name: EmbedB8
+model_name: EmbedB9
 sample_size: 100000
