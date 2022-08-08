@@ -1,7 +1,6 @@
-archi_desc: Bi-LSTM 32 + Dropout 0.5
+archi_desc: Dense 32 + Dropout 0.5
 batch_size: 4096
-layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
-  {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
-  1})]'
-model_name: ArchiREF
+layers: '[(''InputLayer'', {}), (''Dense'', {''units'': 32}), (''Dropout'', {''rate'':
+  0.5}), (''Dense'', {''units'': 1})]'
+model_name: Archi000
 sample_size: 1452791
