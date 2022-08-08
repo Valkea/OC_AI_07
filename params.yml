@@ -1,5 +1,7 @@
-archi_desc: LogisticRegression with TfidVectorizer
-batch_size: null
-layers: null
-model_name: EmbedC0
-sample_size: 100000
+archi_desc: Bi-LSTM 32 + Dropout 0.5
+batch_size: 8192
+layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 200}), (''Bidirectional'',
+  {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
+  1})]'
+model_name: ArchiREF
+sample_size: 1452791
