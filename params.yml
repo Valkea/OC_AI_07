@@ -1,7 +1,7 @@
-archi_desc: GloVeTwitter 25d + MASK + NT + Unigrams| Bi-LSTM 32 + Dropout 0.5
+archi_desc: GloVeTwitter 100d + MASK + NT + Unigrams| Bi-LSTM 32 + Dropout 0.5
 batch_size: 1024
-layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 25}), (''Bidirectional'',
+layers: '[(''InputLayer'', {}), (''Embedding'', {''output_dim'': 100}), (''Bidirectional'',
   {}), (''LSTM'', {''units'': 32}), (''Dropout'', {''rate'': 0.5}), (''Dense'', {''units'':
   1})]'
-model_name: EmbedB5
+model_name: EmbedB6
 sample_size: 100000
