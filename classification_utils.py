@@ -170,6 +170,7 @@ def print_prauc(y_true_dict, y_pred_dict, figsize=[5, 5], ax=None, top_others=3)
         )
         auc_scores[model_name] = pr_score
 
+    y_true = np.array(y_true)
     no_skill = len(y_true[y_true == 1]) / len(y_true)
     ax.plot(
         [0, 1],
