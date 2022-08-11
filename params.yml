@@ -1,5 +1,5 @@
-archi_desc: Auto* RAW "distilbert-base-uncased-finetuned-sst-2-english"
+archi_desc: Auto* RAW "cardiffnlp/twitter-roberta-base-sentiment"
 batch_size: null
-layers: distilbert-base-uncased-finetuned-sst-2-english
-model_name: Transformers_REF1
+layers: cardiffnlp/twitter-roberta-base-sentiment
+model_name: Transformers_REF2
 sample_size: 100000
