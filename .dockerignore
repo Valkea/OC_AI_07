@@ -1,0 +1,12 @@
+data
+models
+medias
+Ressources
+venvP7
+.dvc
+.git
+__pycache__
+
+# Allow files and directories
+!models/SelectedModel.keras
+!models/SelectedTextVectorizerModel.bin
