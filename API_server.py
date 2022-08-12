@@ -67,6 +67,7 @@ def preprocess_txt(string):
 
     return lemmas
 
+
 # --- Load TextVectorizer ---
 print("Load TextVectorizer Model")
 TV_config, TV_weigths = joblib.load(pathlib.Path("models", "SelectedTextVectorizerModel.bin"))
@@ -108,20 +109,24 @@ def predict():
     print("--- TextVectorization")
     txt = text_vectorization(txt)
 
-    # Apply TextVectorizer
+    # Convert to Tensor
     print("--- Convert to tensor")
     ready_txt = tf.convert_to_tensor([txt])
 
     # Apply model
     print("--- Predict")
     pred = model.predict(ready_txt)
-    label = "Positive" if pred[0] > 0.5 else "Negative"
+
+    if pred[0] > 0.474:  # best threshold found
+        label = "Positive"
+        pred_value = float(pred[0])
+    else:
+        label = "Negative"
+        pred_value = 1.0 - float(pred[0])
 
     # Return values
-    pred_value = float(pred[0])
-
     return jsonify(
-            f"The predicted label is **{label.upper()}** with the following probabilities: {pred_value:.3f}\n"
+            f"The predicted label is **{label.upper()}** with the following probability: {pred_value*100.0:.2f}%"
     )
 
 
