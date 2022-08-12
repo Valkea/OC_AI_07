@@ -1,0 +1,4 @@
+outs:
+- md5: 20d642aac881727037b1af336f55df3d
+  size: 641068
+  path: SelectedTextVectorizerModel.bin
