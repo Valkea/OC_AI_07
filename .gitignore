@@ -7,5 +7,3 @@ Livrables
 .ipynb_checkpoints
 *.swp
 secrets.txt
-models
-data
