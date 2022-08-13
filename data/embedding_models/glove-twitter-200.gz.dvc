@@ -1,0 +1,4 @@
+outs:
+- md5: e52e8392d1860b95d5308a525817d8f9
+  size: 795373100
+  path: glove-twitter-200.gz
