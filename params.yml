@@ -1,5 +1,7 @@
-archi_desc: Auto* RAW "cardiffnlp/twitter-roberta-base-sentiment"
-batch_size: null
-layers: cardiffnlp/twitter-roberta-base-sentiment
-model_name: Transformers_REF2
-sample_size: 100000
+archi_desc: Auto* Fine-tuning "roberta-base"
+batch_size: 64
+epochs: 5
+layers: roberta-base
+learning_rate: 1.0e-05
+model_name: Transformers_FT1
+sample_size: 20000
