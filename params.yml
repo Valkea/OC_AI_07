@@ -1,7 +1,7 @@
 archi_desc: Auto* Fine-tuning "roberta-base"
-batch_size: 64
-epochs: 5
+batch_size: 128
+epochs: 25
 layers: roberta-base
 learning_rate: 1.0e-05
 model_name: Transformers_FT1
-sample_size: 20000
+sample_size: 100000
