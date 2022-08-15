@@ -102,9 +102,9 @@ Nous avons commencé par la mises en place d'un algorithme naïf *(DummyClassifi
 
 Après avoir établi notre baseline naïve, nous avons entrainé des **régressions logistiques** sur chacun des dataset pré-processés *(avec grid-search pour les hyper-paramètres)*.
 
-Les 8 modèles produits, ont mis en évidence l'influence négative de certains pré-traitements. On note en particulier l'**influence de la suppression des stop-words** qui semble problématique puisque ce sont les pré-traitements les ayant gardé qui ont obtenus les meilleurs résultats. On peut supposer que leur suppression peut changer le sens des mots *(`I don't like it` --> `I like`)* et donc perturber l'apprentissage.
+Les 8 modèles produits, ont mis en évidence l'**influence négative de la suppression des stop-words**. On peut supposer que leur suppression peut changer le sens des mots *(`I don't like it` --> `I like`)* et donc perturber l'apprentissage.
 
-Voici les résultats obtenus avec tous les samples du pré-processing `RAW` préparés avec un **TF-IDF**:
+Voici les résultats avec les samples du pré-processing `RAW` préparés avec **TF-IDF**:
 
 <img src="medias/LR0_scores.png">
 <img src="medias/LR0_confusion.png">
@@ -113,21 +113,21 @@ Voici les résultats obtenus avec tous les samples du pré-processing `RAW` pré
 ---
 ## Modèle sur mesure avancé
 
-Nous avons ensuite exploré les possibilités offertes par les réseaux de neurones et en particulier les **RNN** *(réseaux de neurones récurrents)*.
+Nous avons ensuite exploré les possibilités des réseaux de neurones récurrents.
 
 Pour ce faire, nous avons procédé étape par étape:
 
->### 1. recherche du **pré-processing** le plus adapté
+>### 1. recherche du **pré-processing**
 > Chacun des 8 datasets pré-processés a été traités pour obtenir des séquences d'index au lieu de séquences de mots, puis ils ont été évalués avec un modèle RNN commun.
 >
 > **Conclusions** : là encore, les pré-processing ne supprimant PAS les stop-words ont donné les meilleurs résultats.
 >
-> Mais cette fois c'est le pré-traitement `PREPROCESS04_nofilter` consistant en un nettoyage rudimentaire *(celui inclus dans la tokenization)*, suivi d'une lemmatization, qui s'est imposé.
+> Mais cette fois c'est `PREPROCESS04_nofilter` consistant en un nettoyage rudimentaire *(celui de la tokenization)*, suivi d'une lemmatization, qui s'est imposé.
 
 <br>
 
->### 2. recherche du **plongement de mots** le plus adapté
->> Le plongement de mots est une représentation des mots sous forme de vecteurs à valeur réelle qui codent leur signification contextuelle, de sorte que les mots qui sont plus proches dans l'espace vectoriel sont censés avoir une signification similaire. Ainsi les mots `Femme` et `Homme` sont encodés de sorte que si l'on fait `Roi` - `Homme` + `Femme`, on devrait obtenir le vecteur du mot `Reine`. Cette approche permet également de distinguer des mots identiques qui s'utilisent dans des contextes différents.
+>### 2. recherche du **plongement de mots**
+>> Le plongement de mots est une représentation des mots sous forme de vecteurs qui codent leur signification contextuelle, de sorte que les mots qui sont proches dans l'espace vectoriel sont censés avoir une signification similaire. Ainsi les mots `Femme` et `Homme` sont encodés de sorte que si l'on fait `Roi` - `Homme` + `Femme`, on devrait obtenir le vecteur de `Reine`. Cette approche permet également de distinguer des mots identiques qui s'utilisent dans des contextes différents.
 >
 > On a testé:
 > - des modèles bag-of-words / bag-of-ngrams *(sans embedding)*
@@ -135,23 +135,23 @@ Pour ce faire, nous avons procédé étape par étape:
 >
 > **Conclusions** : les modèles bag-of-bigrams *(one-hot-encoded, tf-idf ou count)* ont donné de bons résultats, mais subissent rapidement un problème de dimentionnalité en lien avec la taille du vocabulaire.
 >
-> Les modèles séquentiels obtiennent les meilleurs résultats, mais c'est très variable d'un embedding à l'autre; les modèles les plus génériques comme le `Word2Vec300_GoogleNews` ou le `FastText300` ont donnés des résultats très honorables sans pour autant surpasser notre meilleur modèle bag-of-bigrams en one-hot-encoding. De même, le `Glove-100d` n'a pas brillé sur notre dataset, mais ses versions spécialement entraînées sur des corpus Twitter ont donné d'excellents résultats *(surtout le 100d et le 200d)*.
+> Les modèles séquentiels obtiennent les meilleurs résultats, mais c'est très variable d'un embedding à l'autre; les modèles les plus génériques comme le `Word2Vec300_GoogleNews` ou le `FastText300` ont donnés des résultats très honorables sans pour autant surpasser notre meilleur modèle bag-of-bigrams. De même, le `Glove-100d` n'a pas brillé sur notre dataset, mais les GloVe entraînés sur des corpus Twitter ont donné d'excellents résultats.
 >
-> C'est d'ailleurs l'embedding `GloveTwitter 200d` qui a été retenu pour la suite.
+> C'est d'ailleurs l'embedding `GloveTwitter 200d` qui a été retenu.
 
 <br>
 
->### 3. recherche de **l'architecture** la plus adaptée
+>### 3. recherche de **l'architecture**
 >
-> Nous avons préparé 11 architectures basées sur des couches `SimpleRNN`, `LSTM` *(Long Short Term Memory)* ou `GRU` *(Gated Recurrent Unit)* avec diverses variantes *(`bidirectionnel`, 32 units, 64 units...)*
+> Nous avons préparé 11 architectures basées sur des couches `SimpleRNN`, `LSTM` ou `GRU` avec diverses variantes *(`bidirectionnel`, 32 ou 64 units...)*
 >
->> Les **RNN** *(réseaux neuronaux dont au moins un neurone tourne en boucle vers sa propre couche ou une couche précédente)* tels que les *SimpleRNN*, les *LSTM* ou les *GRU*, sont crées pour traiter les données de manière séquentielle en essayant de faire persister l'information.
+>> Les **RNN** *(réseaux neuronaux dont au moins un neurone boucle vers sa propre couche ou une couche précédente)* tels que les *SimpleRNN*, les *LSTM* ou les *GRU*, sont crées pour traiter des séquences en essayant de faire persister l'information.
 >
-> **Conclusions** : on constate que les architectures avec des couches *LSTM* et *GRU* *(qui se valent dans l'ensemble)* surpassent les architectures plus simples, que les architectures bi-directionnelles surpassent les uni-directionnelles, et enfin que plus on a d’unités d'activation et plus ça semble bénéfique.
+> **Conclusions** : les architectures avec des couches *LSTM* et *GRU* *(qui se valent dans l'ensemble)* surpassent les architectures plus simples, les architectures bi-directionnelles surpassent les uni-directionnelles, et enfin plus on a d’unités d'activation et plus ça semble bénéfique.
 >
-> C'est donc `l'architecture la plus complexe qui nous a donné les meilleurs résultats`, mais les différences entre toutes les architectures *LSTM* et *GRU* essayées sont assez faibles *(moins de 2% d'écart)* et ces tendances pourraient fort bien être tout autre avec un dataset différent.
+> C'est donc `l'architecture la plus complexe qui a donné les meilleurs résultats`, mais les différences entre toutes les architectures *LSTM* et *GRU* sont assez faibles *(moins de 2%)* et ces tendances pourraient être tout autre avec un autre dataset.
 
-Voici les résultats du meilleur modèle RNN obtenu:
+Voici les résultats du meilleur modèle RNN:
 
 <img src="medias/RNN402_scores.png">
 <img src="medias/RNN402_confusion.png">
@@ -176,7 +176,7 @@ Mais ce gain se paie le prix fort avec **un temps d'entrainement particulièreme
 
 Nous pourrions donc probablement améliorer le modèle en lui fournissant davantages d'exemples, mais il faudra en payer le prix en temps *(et donc en argent)*.
 
-Voici les résultats du meilleur modèle BERT obtenu:
+Voici les résultats du meilleur modèle BERT:
 
 <img src="medias/TRFT1_scores.png">
 <img src="medias/TRFT1_confusion.png">
@@ -229,6 +229,6 @@ Voici les résultats du meilleur modèle BERT obtenu:
     </tr>
 </table>
 
-Dans notre cas, l'évolution des performances s'est faite de paire avec l'évolution en complexité de nos modèles. Ainsi, dans l'absolu le modèle *roberta-base* avec fine-tuning nous donne les meilleurs résultats.
+Dans notre cas, l'évolution des performances s'est faite de paire avec l'évolution en complexité de nos modèles.
 
-Mais comme il demande de grosses ressources, nous avons choisi de déployer notre meilleur modèle RNN, qui malgré des performances légèrement moindres a l'avantage d'être ré-entrainable dans un laps de temps plus raisonnable et de ne pas avoir besoin de GPU pour fonctionner *(il est d'ailleurs déployé sans GPU sur Heroku)*.
+Le modèle *roberta-base* avec fine-tuning nous donne donc les meilleurs résultats. Mais comme il demande de grosses ressources, nous avons choisi de déployer notre meilleur modèle RNN, qui malgré des performances légèrement moindres a l'avantage d'être ré-entrainable dans un laps de temps plus raisonnable et de ne pas avoir besoin de GPU pour fonctionner *(il est d'ailleurs déployé sans GPU sur Heroku)*.
