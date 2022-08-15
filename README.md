@@ -207,7 +207,7 @@ Then, the project can be compiled, published and ran on Heroku, with:
 ```bash
 curl -X POST -H "Content-Type: text/plain" --data "I love this" https://twitter-sentiment-clf.herokuapp.com/predict
 ```
-This should return an "The predicted label is **NEGATIVE** with the following probability: 98.79%".
+This should return an "The predicted label is **POSITIVE** with the following probability: 92.48%".
 
 The heroku container might take some time to start if it is asleep.
 
