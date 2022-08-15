@@ -1,21 +1,21 @@
 # Détecter les Bad Buzz grâce à l'analyse de sentiments
 
+Notre client nous a demandé **de prédire le sentiment associé à un tweet** parlant de sa marque pour détecter les éventuels bad-buzz. L'analyse des sentiments avec deux polarités semblent donc parfaitement adapté à la demande.
+
 ---
 ## Qu'est-ce que l'analyse des sentiments ?
 
-L'analyse des sentiments est un cas particulier de classification qui consiste à identifier la polarité *(**très positives** / **positives** / **neutres** / **négatives** / **très négatives** / ou autre variante... )* d'un texte donnée.
+L'analyse des sentiments est un cas particulier de classification qui consiste à identifier la polarité *(**positives** / **neutres** / **négatives** ou autre variante... )* d'un texte donnée.
 
 <img src="medias/sentiment-analysis.jpeg" width="500">
 
 C'est donc une technique de traitement du langage naturel *(**NLP**: natural language processing)* qui utilise un modèle d'apprentissage supervisé pour attribuer un *score de sentiment* pondérés aux *entités*, *sujets*, *thèmes* ou *catégories* d'une phrase ou d'un bloc texte entier, afin d'obtenir un score global pour le texte concerné.
 
-> L'analyse des sentiments peut être utile pour:
+> L'analyse des sentiments peut être utilée pour:
 > - **évaluer l'opinion publique**,
 > - **réaliser des études de marché**,
 > - **identifier les ressentis des clients**,
-> - ou encore **surveiller la réputation des marques et des produits**.
-
-Notre client nous a demandé **de prédire le sentiment associé à un tweet** pour détecter les éventuels bad-buzz associés à sa marque. L'analyse des sentiments avec deux polarités *(**positifs** ou **négatifs**)* semblent donc parfaitement adapté à la demande.
+> - **surveiller la réputation des marques et des produits**.
 
 ---
 ## Préparation des données
@@ -24,23 +24,22 @@ Nous avons d'abord analysé le jeu de données pour en tirer des informations ut
 
 >### 1. Distribution de la polarité des tweets
 > <img src="medias/EDA_target_balance.png"><br>
-> On constate que le jeu de données est **parfaitement distribué** entre les deux labels, il n'est donc pas nécessaire de compenser d'une façon ou d'une autre.
+> le jeu de données est **parfaitement distribué** entre les deux labels.
 > ---
 >### 2. Distribution de la temporalité des tweets
 > <img src="medias/EDA_time_distribution.png"><br>
-> On constate que tous les tweets ont été postés entre avril et juin **2009**, et on sait donc qu'ils avaient donc une **limite de 140 caractères** à cette époque.
+> tous les tweets ont été postés en **2009**, ce qui nous permet de déterminer une **limite de 140 caractères**.
 > ---
 >### 3. Distribution des tweets selon leur nombre de caractères
 > <img src="medias/EDA_chars_distribution.png"><br>
-> On constate que certains tweets dépassent la limite des 140 caractères... il a donc fallu chercher pourquoi *(c'était essentiellement des caractères syllabiques mal encodés)* et agir en conséquence.
+> certains tweets dépassent la limite des 140 caractères... il a donc fallu chercher pourquoi et agir en conséquence.
 > ---
 >### 4. Distribution des tweets selon leur nombre de mots
 > <img src="medias/EDA_words_distribution.png"><br>
-> On constate que la moyenne se trouve autour de 13 mots et que le maximum se trouve aux environ de 65 mots. Nous avons donc décidé d'utiliser cette information pour choisir une taille de **padding de 65 pour nos embeddings**.
+> la moyenne se trouve autour de 13 mots et le maximum à 65 mots. Nous allons donc harmonizer la longueur des séquences avec un padding de 65.
 
-<br>Puis après quelques nettoyages de rigueur comme la suppression des balises HTML, des MENTIONS et des mots clés Twitter ou encore le remplacement des URLs par un tag *(avec le recul nous aurions du le supprimer aussi)*, nous avons préparé 8 jeu de données aillant reçu différents types de pré-processing:
+<br>Puis après la suppression des balises HTML et des MENTIONS Twitter ou encore le remplacement des URLs par un tag *(nous aurions dû les supprimer)*, nous avons préparé 8 jeux de données ayant reçu différents pré-processing:
 
->
 > `RAW`
 > - aucun pré-traitement<br>
 > <img src="medias/wordcloud_data_clean.png" width="300"><br>
@@ -51,73 +50,67 @@ Nous avons d'abord analysé le jeu de données pour en tirer des informations ut
 
 > `PREPROCESS02`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy<br>
+> - Tokenization<br>
 > <img src="medias/wordcloud_tokens.png" width="300"><br>
 
 > `PREPROCESS03`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy
-> - Filtrage **avancé** des tokens avec SpaCy<br>
+> - Tokenization
+> - Filtrage **avancé**<br>
 > <img src="medias/wordcloud_tokens_advanced.png" width="300"><br>
 
 > `PREPROCESS03_simple`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy
-> - Filtrage **simple** des tokens avec SpaCy<br>
+> - Tokenization
+> - Filtrage **simple**<br>
 > <img src="medias/wordcloud_tokens_simple.png" width="300"><br>
 
 > `PREPROCESS04`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy
-> - Filtrage **avancé** des tokens avec SpaCy
-> - Lemmatization avec SpaCy<br>
+> - Tokenization
+> - Filtrage **avancé**
+> - Lemmatization<br>
 > <img src="medias/wordcloud2.png" width="300"><br>
 
 > `PREPROCESS04_simple`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy
-> - Filtrage **simple** des tokens avec SpaCy
-> - Lemmatization avec SpaCy<br>
+> - Tokenization
+> - Filtrage **simple**
+> - Lemmatization<br>
 > <img src="medias/wordcloud2simple.png" width="300"><br>
 
 > `PREPROCESS04_nofilter`
 > - nettoyage avec Twitter-preprocessor
-> - Tokenization avec SpaCy
+> - Tokenization
 > - AUCUN Filtrage
-> - Lemmatization avec SpaCy<br>
+> - Lemmatization<br>
 > <img src="medias/wordcloud2nofilter.png" width="300"><br>
 
 
 ---
 ## Modèle naïf
 
-Nous avons commencé la recherche des modèles par la mises en place d'un avec un algorithme naïf *(un DummyClassifier)* permettant d'établir une base de référence à même de nous indiquer si nos autres modèles « apprennent » quelque chose ou pas.
-
-Pour établir cette base, nous avons utilisé les 1452791 samples du **plus simple des pré-processing préparés** *(qui donc avait juste été nettoyé de ses balises HTML et des encodages problématiques)* et sur lequel nous avons appliqué un TF-IDF pour rendre les textes « compatible » avec l'algorithme.
+Nous avons commencé par la mises en place d'un algorithme naïf *(DummyClassifier)* permettant d'établir une base de référence. Pour se faire, nous avons utilisé tous les samples du pré-processing `RAW` sur lesquels nous avons appliqué un **TF-IDF**.
 
 <img src="medias/Dummy_scores.png">
 <img src="medias/Dummy_confusion.png">
 <img src="medias/Dummy_ROCAUC.png">
 
 ---
-## Modèle sur mesure simple *(Logistic Regression)*
+## Modèle sur mesure simple
 
-Après avoir établi notre baseline avec un modèle naïf, nous avons décidé de tester quelques modèles sur mesure mais simple: une **régression logistique** avec grid-search pour les hyper-paramètres, entraînée sur les différents pré-traitements que nous avons préparé.
+Après avoir établi notre baseline naïve, nous avons testé une **régression logistique** avec grid-search pour les hyper-paramètres, que l'on a entraîné sur les différents pré-traitements préparés.
 
-Voici pour comparaison, les résultats sur le même jeu de données que le modèle naïf que nous avons vu *(donc sur le pré-traitement le plus simple avec un TF-IDF)*:
+Les 8 modèles produits avec les 8 pré-traitements, on mis en évidence l'influence négative de certains d'entre eux. On note en particulier l'**influence de la suppression des stop-words** qui semble problématique puisque ce sont les pré-traitements ayant gardé les stop-words qui ont obtenus les meilleurs résultats. On peut supposer que leur suppression peut changer le sens des mots *(`I don't like it` --> `I like`)* et donc perturber l'apprentissage.
+
+Voici les résultats obtenus avec tous les samples du pré-processing `RAW` sur lesquels nous avons appliqué un **TF-IDF**
 
 <img src="medias/LR0_scores.png">
 <img src="medias/LR0_confusion.png">
 <img src="medias/LR0_ROCAUC.png">
 
-Les 8 modèles produits avec les différents pré-traitement, nous on permis de mettre en évidence l'influence de certains d'entre eux sur les résultats de nos modèles.
-
-On note en particulier l'**influence de la suppression des stop-words** qui semble problématique. En effet, on trouve dans les stop-words un certain nombre de mots pouvant servir à la négation et donc une phrase de type `I don't like it` peut devenir après traitement `I like`... ce qui évidemment perturbe l'apprentissage.
-
-Ce sont donc naturellement les pré-traitement ayant fait l'impasse sur la suppression des stop-words qui ont obtenus les meilleurs résultats.
-
 ---
-## Modèle sur mesure avancé *(Neural Networks)*
+## Modèle sur mesure avancé
 
 Après avoir obtenu une idée raisonnable de ce que pouvait nous offrir un modèle « simple », nous avons exploré les possibilités offertes par les réseaux de neurones *(**Neural-Networks**)* et en particulier les réseaux de neurones récurrents *(**RNN**)*.
 
@@ -179,7 +172,7 @@ Voici pour comparaison, les résultats du meilleurs modèle RNN obtenu:
 <img src="medias/RNN402_ROCAUC.png">
 
 ---
-## Modèle avancé BERT *(Transformers)*
+## Modèle avancé BERT
 
 Enfin, nous avons exploré les possibilités offertes par les transformers et en particulier les modèles BERT *(Bidirectional Encoder Representations from Transformers)*.
 
@@ -235,7 +228,7 @@ Voici pour comparaison, les résultats du meilleurs modèle BERT obtenu:
         <td>1452791</td>
     </tr>
     <tr>
-        <th>RNN Archi-402 (lemmas_not_filtered + TextVectorization)</th>
+        <th>RNN Archi-402 (lemmas_not_filtered + TextVectorization[int])</th>
         <td>0.912817</td>
         <td>0.831697</td>
         <td>829.031158</td>
