@@ -100,7 +100,7 @@ Nous avons commencé par la mises en place d'un algorithme naïf *(DummyClassifi
 ---
 ## Modèle sur mesure simple
 
-Après avoir établi notre baseline naïve, nous avons entrainé des **régressions logistiques** sur chacun des dataset pré-processés *(avec grid-search pour les hyper-paramètres)*.
+Après avoir établi notre baseline naïve, nous avons entraîné des **régressions logistiques** sur chacun des dataset pré-processés *(avec grid-search pour les hyper-paramètres)*.
 
 Les 8 modèles produits, ont mis en évidence l'**influence négative de la suppression des stop-words**. On peut supposer que leur suppression peut changer le sens des mots *(`I don't like it` --> `I like`)* et donc perturber l'apprentissage.
 
@@ -168,13 +168,13 @@ Enfin, nous avons exploré les possibilités offertes par les transformers et en
 
 Nous avons donc essayé des modèles BERT sans et avec fine-tuning.
 
-L'utilisation des modèles pré-entrainés sans fine-tuning est facile, mais à moins de choisir une variante correpondant vraiment à notre dataset, les performances restent en dessous de celles obtenus avec notre meilleur RNN.
+L'utilisation des modèles pré-entrainés sans fine-tuning est facile, mais à moins de choisir une variante correspondant vraiment à notre dataset, les performances restent en dessous de celles obtenus avec notre meilleur RNN.
 
 En revanche, après fine-tuning on obtient **des performances intéressantes**; notre modèle dépassant de 3+% les meilleurs scores d'Accuracy ou ROC-AUC obtenus.
 
-Mais ce gain se paie le prix fort avec **un temps d'entrainement particulièrement long** et la **quasi-nécessité d'avoir accès à des GPUs**.
+Mais ce gain se paie le prix fort avec **un temps d’entraînement particulièrement long** et la **quasi-nécessité d'avoir accès à des GPUs**.
 
-Nous pourrions donc probablement améliorer le modèle en lui fournissant davantages d'exemples, mais il faudra en payer le prix en temps *(et donc en argent)*.
+Nous pourrions donc probablement améliorer le modèle en lui fournissant davantage d'exemples, mais il faudra en payer le prix en temps *(et donc en argent)*.
 
 Voici les résultats du meilleur modèle BERT:
 
@@ -231,4 +231,4 @@ Voici les résultats du meilleur modèle BERT:
 
 Dans notre cas, l'évolution des performances s'est faite de paire avec l'évolution en complexité de nos modèles.
 
-Le modèle *roberta-base* avec fine-tuning nous donne donc les meilleurs résultats. Mais comme il demande de grosses ressources, nous avons choisi de déployer notre meilleur modèle RNN, qui malgré des performances légèrement moindres a l'avantage d'être ré-entrainable dans un laps de temps plus raisonnable et de ne pas avoir besoin de GPU pour fonctionner *(il est d'ailleurs déployé sans GPU sur Heroku)*.
+Le modèle *roberta-base* avec fine-tuning nous donne donc les meilleurs résultats. Mais comme il demande de grosses ressources, nous avons choisi de déployer notre meilleur modèle RNN, qui malgré des performances légèrement moindres a l'avantage d'être ré-entraînable dans un laps de temps plus raisonnable et de ne pas avoir besoin de GPU pour fonctionner *(il est d'ailleurs déployé sans GPU sur Heroku)*.
