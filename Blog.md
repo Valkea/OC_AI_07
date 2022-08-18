@@ -118,7 +118,7 @@ Nous avons ensuite exploré les possibilités des réseaux de neurones récurren
 Pour ce faire, nous avons procédé étape par étape:
 
 >### 1. recherche du **pré-processing**
-> Chacun des 8 datasets pré-processés a été traités pour obtenir des séquences d'index au lieu de séquences de mots, puis ils ont été évalués avec un modèle RNN commun.
+> Chacun des 8 datasets pré-processés a été traité pour obtenir des séquences d'index au lieu de séquences de mots, puis ils ont été évalués avec un modèle RNN commun.
 >
 > **Conclusions** : là encore, les pré-processing ne supprimant PAS les stop-words ont donné les meilleurs résultats.
 >
